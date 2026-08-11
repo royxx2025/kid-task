@@ -1899,17 +1899,17 @@ function testMathQ(rnd){
 }
 function testBuildCn(rnd){
   const words=Object.keys(CN_WORD_MEAN);
-  return pickN(words,5,rnd).map(w=>{ const m=CN_WORD_MEAN[w]; const wrongs=pickN(words.filter(x=>x!==w),3,rnd); const opts=shuffle([w].concat(wrongs),rnd); return {kind:'cn', word:w, q:'下面哪个词语的意思是「'+esc(m)+'」？', ans:w, mean:m, opts:opts, plain:true}; });
+  return pickN(words,5,rnd).map(w=>{ const m=CN_WORD_MEAN[w]; const wrongs=pickN(words.filter(x=>x!==w),3,rnd); const opts=shuffleRnd([w].concat(wrongs),rnd); return {kind:'cn', word:w, q:'下面哪个词语的意思是「'+esc(m)+'」？', ans:w, mean:m, opts:opts, plain:true}; });
 }
 function testBuildMath(rnd){
-  return Array.from({length:5},()=>{ const t=testMathQ(rnd); const opts=shuffle([t.ans].concat(pickN([t.ans+1,t.ans-1,t.ans+2,t.ans-2,t.ans+10,t.ans-10].filter(x=>x>=0&&x!==t.ans),3,rnd)),rnd).map(String); return {kind:'math', q:t.q, ans:String(t.ans), opts:opts, plain:false}; });
+  return Array.from({length:5},()=>{ const t=testMathQ(rnd); const opts=shuffleRnd([t.ans].concat(pickN([t.ans+1,t.ans-1,t.ans+2,t.ans-2,t.ans+10,t.ans-10].filter(x=>x>=0&&x!==t.ans),3,rnd)),rnd).map(String); return {kind:'math', q:t.q, ans:String(t.ans), opts:opts, plain:false}; });
 }
 function testBuildEn(rnd){
   const bank=getEnBank();
   const pool=bank.filter(x=>x&&x.word&&x.meaning);
-  return pickN(pool,5,rnd).map(it=>{ const wrongs=pickN(pool.filter(x=>x.word!==it.word),3,rnd).map(x=>x.word); const opts=shuffle([it.word].concat(wrongs),rnd); return {kind:'en', word:it.word, q:'「'+esc(it.meaning)+'」对应的英文单词是？', ans:it.word, opts:opts, plain:true, phon:EN_PHON[it.word]}; });
+  return pickN(pool,5,rnd).map(it=>{ const wrongs=pickN(pool.filter(x=>x.word!==it.word),3,rnd).map(x=>x.word); const opts=shuffleRnd([it.word].concat(wrongs),rnd); return {kind:'en', word:it.word, q:'「'+esc(it.meaning)+'」对应的英文单词是？', ans:it.word, opts:opts, plain:true, phon:EN_PHON[it.word]}; });
 }
-function shuffle(arr,rnd){ const a=arr.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(rnd()*(i+1)); const t=a[i]; a[i]=a[j]; a[j]=t; } return a; }
+function shuffleRnd(arr,rnd){ const a=arr.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(rnd()*(i+1)); const t=a[i]; a[i]=a[j]; a[j]=t; } return a; }
 function ensureTestDay(){
   const d=getTestDay();
   const needRebuild=!(d && d.date===todayStr() && d.cats) || d.v!==1 || !isTestDayValid(d);
